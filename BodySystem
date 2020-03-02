@@ -1,0 +1,224 @@
+//生物节律系统
+//基于  devc++上的操作 
+ 
+#include <stdio.h>
+#include <time.h> 
+#include <string.h>
+#include <stdlib.h>
+struct System{
+	int year;
+	int month;
+	int week;
+	int second;
+	int hour;
+	int minute;
+	int day; 
+};
+//判断月份
+ int Month(char *String){
+ 	if(strcmp(String,"Jan")==0)
+ 		return 1;
+ 	if(strcmp(String,"Feb")==0)
+ 		return 2;
+ 	if(strcmp(String,"Mar")==0)
+ 		return 3;
+ 	if(strcmp(String,"Apr")==0)
+ 		return 4;
+ 	if(strcmp(String,"May")==0)
+ 		return 5;
+ 	if(strcmp(String,"Jun")==0)
+ 		return 6;
+ 	if(strcmp(String,"Jul")==0)
+ 		return 7;
+ 	if(strcmp(String,"Aug")==0)
+ 		return 8;
+ 	if(strcmp(String,"Sept")==0)
+ 		return 9;
+ 	if(strcmp(String,"Oct")==0)
+ 		return 10;
+ 	if(strcmp(String,"Nov")==0)
+ 		return 11;
+ 	if(strcmp(String,"Dec")==0)
+ 		return 12;
+//	switch(String){
+//		case "Jan": return 1;
+//		case "Feb": return 2;
+//		case "Mar": return 3;
+//		case "Apr": return 4;
+//		case "May": return 5;
+//		case "Jun": return 6;
+//		case "Jul": return 7;
+//		case "Aug": return 8;
+//		case "Sept": return 9;
+//		case "Oct": return 10;
+//		case "Nov": return 11;
+//		case "Dec": return 12; 		
+} 
+
+
+//  计算公式 
+int Number(int nowyear,int leapYearNumber,int birthyear,int birthToDay,int nowToDay){
+	int num = (nowyear-birthyear)*365+leapYearNumber-(birthToDay)+nowToDay;
+	return num;
+}
+
+
+
+//计算是否为闰年
+int leapYear(int year){
+		if(year%100!=0){
+		if(year%4==0){
+			return 1;
+		}else{
+			return 0;
+		}
+	}else{
+		if(year%400==0){
+			return 1; 
+		}else{
+			return 0;
+		}
+	}
+} 
+
+
+
+//   计算闰年的年数
+int Leapyear(int birthyear,int nowyear){
+	//判断 出生年份是不是闰年
+	int i = birthyear;
+	int change;   //算与闰年相差的年数 
+	int m=leapYear(i);
+	if(i==1){
+		change=0;
+	}else{
+		change=i%4;
+	}
+	int num;// 闰年的的个数
+	num=(nowyear-(i-change))/4; 
+	return num;
+} 
+
+
+
+//计算  1月1号 至测定时间的天数
+int Day(int month,int day,int year){
+	int Day;
+	switch(month) {
+        case 1: Day=day;break;
+        case 2: Day=31+day;break;
+        case 3: Day=(31+28)+leapYear(year)+day;break;
+        case 4: Day=(31+28+31)+leapYear(year)+day;break;
+        case 5: Day=(31+31+30+28)+leapYear(year)+day;break;
+        case 6: Day=(31+28+31+30+31)+leapYear(year)+day;break;
+        case 7: Day=(31+28+31+30+31+30)+leapYear(year)+day;break;
+        case 8: Day=(31+28+31+30+31+30+31)+leapYear(year)+day;break;
+        case 9: Day=(31+28+31+30+31+30+31+31)+leapYear(year)+day;break;
+        case 10: Day=(31+28+31+30+31+30+31+31+30)+leapYear(year)+day;break;
+        case 11: Day=(31+28+31+30+31+30+31+31+30+31)+leapYear(year)+day;break;
+        case 12: Day=(31+28+31+30+31+30+31+31+30+31+30)+leapYear(year)+day;break;
+        default:
+        	printf("输入日期错误");
+			exit(0);
+    }
+    return Day;
+}
+//体力节律 
+void  physicalrhythm (int num){
+	int i =num%23;
+	if(i==0){
+		printf("体力正好处于周期日"); 
+	}else if(i<12){
+		printf("体力处于高潮日第%d天",i); 
+	}else if(i==12){
+		printf("体力正好处于临界日"); 
+	}else{
+		printf("体力处于低潮日第%d天",i-12);
+	}
+}
+//情绪节律
+void emotionalrhythm(int num){
+	int i = num%28;
+	if(i==0){
+		printf("情绪正好处于周期日"); 
+	}else if(i<14){
+		printf("情绪处于高潮日第%d天",i); 
+	}else if(i==14){
+		printf("情绪正好处于临界日"); 
+	}else{
+		printf("情绪处于低潮日第%d天",i-14);
+	}
+}
+//智力节律 
+void brains(int num){
+	int i = num%33;
+	if(i==0){
+		printf("智力正好处于周期日"); 
+	}else if(i<17){
+		printf("智力处于高潮日第%d天",i); 
+	}else if(i==17){
+		printf("智力正好处于临界日"); 
+	}else{
+		printf("智力处于低潮日第%d天",i-17);
+	}
+	
+}
+int main (){
+   time_t rawtime;
+   struct tm *info;
+   time( &rawtime );
+   info = localtime( &rawtime );
+   char*string;
+   string=asctime(info);
+  // printf("当前的本地时间和日期：%s",asctime(info));
+   char s[2]=" " ;
+   char * S;
+   char *middle[8]; 
+   //把整个时间的字符串 拆分为  五部分   middle[0]代表 星期   ；middle[1 ]代表月份 ；middle[2] 天数；middle[3]代表时间 包括 时分秒;  middle[4]代表年份 
+   S=strtok(string,s);
+   for (int i = 0; i<5;i++){
+   		middle[i]=S;
+    	//printf("%s\n",middle[i]);
+    	S=strtok(NULL,s);
+   }
+   //把小时 分钟 秒 分开；分开的是middle[3]   分别用middle 567 表示 ； 5 代表 小时 ；6 代表 分钟 ；7 代表 秒 
+    char aprt[2]=":";
+    S=NULL;
+    S=strtok(middle[3],aprt);
+    for(int i = 5;i<=7;i++){
+    	middle[i]=S;
+    	//printf("%s\n",middle[i]);
+    	S=strtok(NULL,aprt);
+	}
+   //分别 把五部分字符串 放入对应的时间体中
+    struct System system;
+    system.second=atoi(middle[7]);   //秒 
+    system.hour=atoi(middle[5]);     //小时 
+    system.minute=atoi(middle[6]);   //分钟 
+    system.month=Month(middle[1]);   //月份 
+    //system.week=atoi(middle[0]);   
+    system.year=atoi(middle[4]);     //年份 
+    system.day=atoi(middle[2]);      //天数 
+    //  得到 测试者的出生年 
+    printf("请输入 您的出生年份  分别输入公历的 年 月 日 用空格键分开 \n");
+    int birthYear,birthMonth,birthDay;
+    scanf("%d%d%d",&birthYear,&birthMonth,&birthDay);
+    //闰年的天数 
+	int LeapYear=Leapyear(birthYear,system.year);  
+	// 出生的时间到1.1的天数
+	int birth_daynumber= Day(birthMonth,birthDay,birthYear) ; 
+	//现在的时间到1.1的天数  
+	int now_daynumber=Day(system.month,system.day,system.year);
+	//计算公式得出 取余数前的值   
+   	int number=Number(system.year,LeapYear,birthYear,birth_daynumber,now_daynumber);
+   	printf("现在测试的时间是：   %d年 %d月 %d 日 %d时 %d分 %d秒\n\n",system.year,system.month,system.day,system.hour,system.minute,system.second);
+   	printf("出生到现在闰年天数是 %d\n", LeapYear);
+   	printf("现在到1月1号的天数是 %d 天\n",now_daynumber);
+   	printf("出生日期到1月1号的天数是 %d 天\n",birth_daynumber);
+   	//把取余数前的值  输入     得出三种情况   
+	physicalrhythm(number);
+	printf("\n");
+   	emotionalrhythm(number);
+   	printf("\n");
+   	brains(number); 
+}
